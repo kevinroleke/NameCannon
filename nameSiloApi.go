@@ -46,7 +46,6 @@ func GetBalance(apiKey string) (float64, error) {
 
 func RegisterDomain(apiKey string, domain string, ns1 string, ns2 string) error {
 	reqUrl := fmt.Sprintf("%sregisterDomain?version=1&type=xml&years=1&private=1&auto_renew=1&domain=%s&key=%s&ns1=%s&ns2=%s", NSBaseUrl, domain, apiKey, ns1, ns2)
-	// fmt.Println(reqUrl)
 
 	resp, err := http.Get(reqUrl)
 	if err != nil {
@@ -73,11 +72,13 @@ func RegisterDomain(apiKey string, domain string, ns1 string, ns2 string) error 
 		return err
 	}
 
+	// alternative to getting balance on each buy.
 	Balance -= orderAmount
 
 	return err
 }
 
+// not currently used in NameCannon, but can be used to buy the most amount of domains possible?
 func GetPrice(apiKey string, tld string) (float64, error) {
 	reqUrl := fmt.Sprintf("%sgetPrices?version=1&type=xml&key=%s", NSBaseUrl, apiKey)
 
@@ -97,11 +98,13 @@ func GetPrice(apiKey string, tld string) (float64, error) {
 	if err != nil {
 		return 0.0, err
 	}
-	fmt.Println(xmap)
+	
 	if xmap["namesilo>reply>detail"] != "success" {
 		return 0.0, errors.New(xmap["namesilo>reply>detail"])
 	}
 
+	// this is why we need the XmlMap trick and not just unmarshal
+	// the namesilo api dynamically generates these <com>, <net>, <xyz> items...
 	price, err := strconv.ParseFloat(xmap["namesilo>reply>" + tld + ">registration"], 64)
 	if err != nil {
 		return 0.0, err

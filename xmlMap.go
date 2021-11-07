@@ -1,4 +1,10 @@
-// https://github.com/vikasgowda3007/golang
+// taken from https://github.com/vikasgowda3007/golang
+// module errors by default, so I copied to this file.
+
+// this xmlmap method is an alternative to xml.Unmarshal to a struct
+// used because GetPrice returns dyanmic xml names 
+
+// below code and comments by github.com/vikasgowda3007
 
 package main
 

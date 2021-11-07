@@ -87,11 +87,16 @@ func main() {
 
 	domains := strings.Split(string(domainsList), "\n")
 
-	for i, domain := range domains {
-		Balance, err = GetBalance(*namesiloApiKey)
-		HandleErr(err)
+	Balance, err = GetBalance(*namesiloApiKey)
+	HandleErr(err)
 
-		log.Printf("Balance is $%f\n", Balance)
+	log.Printf("Balance is $%f\n", Balance)
+
+	for i, domain := range domains {
+		// Balance, err = GetBalance(*namesiloApiKey)
+		// HandleErr(err)
+
+		// log.Printf("Balance is $%f\n", Balance)
 
 		if Balance > *lowBal {
 			log.Printf("Buying domain %s\n", domain)
@@ -100,10 +105,16 @@ func main() {
 				log.Println(err)
 				domains = RemoveIndex(domains, i)
 			}
+			log.Printf("(Estimated) balance is $%f\n", Balance)
 		} else {
 			log.Fatal("Low balance")
 		}
 	}
+
+	Balance, err = GetBalance(*namesiloApiKey)
+	HandleErr(err)
+
+	log.Printf("Balance is $%f\n", Balance)
 
 	for _, domain := range domains {
 		err = addToCloudflare(*cloudflareApiKey, domain, string(dnsRecords))
