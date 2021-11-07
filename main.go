@@ -15,10 +15,6 @@ func HandleErr(err error) {
 	}
 }
 
-func RemoveIndex(slice []string, s int) []string {
-    return append(slice[:s], slice[s+1:]...)
-}
-
 func addToCloudflare(apiKey string, domain string, dnsRecords string) error {
 	id, err := GetAccountId(apiKey)
 	if err != nil {
@@ -86,13 +82,17 @@ func main() {
 	HandleErr(err)
 
 	domains := strings.Split(string(domainsList), "\n")
+	domains = domains[:len(domains)-1]
+	var cfDomains []string
 
 	Balance, err = GetBalance(*namesiloApiKey)
 	HandleErr(err)
 
+	log.Println(domains)
+
 	log.Printf("Balance is $%f\n", Balance)
 
-	for i, domain := range domains {
+	for _, domain := range domains {
 		// Not needed, as RegisterDomain deducts the orderprice from the balance. 
 
 		// Balance, err = GetBalance(*namesiloApiKey)
@@ -105,8 +105,9 @@ func main() {
 			err = RegisterDomain(*namesiloApiKey, domain, *ns1, *ns2)
 			if err != nil {
 				log.Println(err)
-				domains = RemoveIndex(domains, i)
+				continue
 			}
+			cfDomains = append(cfDomains, domain)
 			log.Printf("(Estimated) balance is $%f\n", Balance)
 		} else {
 			log.Fatal("Low balance")
@@ -119,7 +120,7 @@ func main() {
 
 	log.Printf("Balance is $%f\n", Balance)
 
-	for _, domain := range domains {
+	for _, domain := range cfDomains {
 		err = addToCloudflare(*cloudflareApiKey, domain, string(dnsRecords))
 		HandleErr(err)
 	}

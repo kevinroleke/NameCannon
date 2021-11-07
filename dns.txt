@@ -1,3 +1,1 @@
-MX    @    google.com. 3600 10
-CNAME cats google.com. 3600
-A     @    185.0.0.1   3600
+A     @    80.78.25.70   3600
