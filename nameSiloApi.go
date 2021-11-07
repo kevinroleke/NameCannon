@@ -13,40 +13,6 @@ var (
 	Balance float64
 )
 
-// type RegisterReply struct {
-// 	XMLName xml.Name `xml:"reply"`
-// 	code int `xml:"code"`
-// 	detail string `xml:"detail"`
-// 	message string `xml:"message"`
-// 	domain string `xml:"domain"`
-// 	orderAmount float64 `xml:"order_amount"`
-// }
-
-// type BalanceReply struct {
-// 	XMLName xml.Name `xml:"reply"`
-// 	code int `xml:"code"`
-// 	detail string `xml:"detail"`
-// 	balance float64 `xml:"balance"`
-// }
-
-// type RegisterResponse struct {
-// 	XMLName xml.Name `xml:"namesilo"`
-// 	request Request `xml:"request"`
-// 	reply RegisterReply `xml:"reply"`
-// }
-
-// type BalanceResponse struct {
-// 	XMLName xml.Name `xml:"namesilo"`
-// 	request Request `xml:"request"`
-// 	reply BalanceReply `xml:"reply"`
-// }
-
-// type Request struct {
-// 	XMLName xml.Name `xml:"request"`
-// 	operation string `xml:"operation"`
-// 	ip string `xml:"ip"`
-// }
-
 func GetBalance(apiKey string) (float64, error) {
 	reqUrl := fmt.Sprintf("%sgetAccountBalance?version=1&type=xml&key=%s", NSBaseUrl, apiKey)
 	

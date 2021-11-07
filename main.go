@@ -45,6 +45,7 @@ func main() {
 	namesiloApiKey := flag.String("namesiloSecret", "", "NameSilo API key.")
 	cloudflareApiKey := flag.String("cloudflareSecret", "", "Cloudflare API key.")
 	dnsRecordsFile := flag.String("dnsRecordsFile", "", "Filename containing DNS records.")
+	domainsFile := flag.String("domainsFile", "", "Filename containing a newline deliminated list of domains to register.")
 
 	ns1 := flag.String("ns1", "", "Cloudflare nameserver 1.")
 	ns2 := flag.String("ns2", "", "Cloudflare nameserver 2.")
