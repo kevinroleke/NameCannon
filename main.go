@@ -93,6 +93,8 @@ func main() {
 	log.Printf("Balance is $%f\n", Balance)
 
 	for i, domain := range domains {
+		// Not needed, as RegisterDomain deducts the orderprice from the balance. 
+
 		// Balance, err = GetBalance(*namesiloApiKey)
 		// HandleErr(err)
 
@@ -111,6 +113,7 @@ func main() {
 		}
 	}
 
+	// Get exact value
 	Balance, err = GetBalance(*namesiloApiKey)
 	HandleErr(err)
 
