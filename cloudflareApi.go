@@ -27,6 +27,7 @@ type Accounts struct {
 	}
 }
 
+// we don't need anything in the response besides errors
 type DNS struct {
 	Success bool
 	Errors []Error
@@ -42,10 +43,12 @@ type Zone struct {
 	}
 }
 
+// compact the api authentication into this function 
 func AuthenticatedCloudflareReq(url string, data string, apiKey string) (*http.Response, error) {
 	var req *http.Request
 	var err error
 
+	// get and post in one function. For get, leave post data blank.
 	if data == "" {
 		req, err = http.NewRequest("GET", url, nil)
 	} else {
@@ -58,13 +61,12 @@ func AuthenticatedCloudflareReq(url string, data string, apiKey string) (*http.R
 
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Authorization", "Bearer " + apiKey)
-	// req.Header.Set("X-Auth-Key", apiKey)
-	// req.Header.Set("X-Auth-Email", email)
 
 	client := &http.Client{}
 	return client.Do(req)
 }
 
+// account id needed for adding zone
 func GetAccountId(apiKey string) (string, error) {
 	reqUrl := CFBaseUrl + "accounts"
 	resp, err := AuthenticatedCloudflareReq(reqUrl, "", apiKey)
@@ -124,6 +126,7 @@ func AddDnsRecords(apiKey string, domain string, zoneId string, text string) err
 	for _, line := range lines {
 		spl := strings.Fields(line)
 
+		// priority is only used for certain record types like MX. 
 		var priority string 
 		if len(spl) == 4 {
 			priority = ""
@@ -146,6 +149,7 @@ func AddDnsRecords(apiKey string, domain string, zoneId string, text string) err
 			name = pname + "." + domain
 		}
 
+		// for the types of records in which we can, use cloudflare proxying
 		if typ == "A" || typ == "CNAME" || typ == "AAAA" {
 			proxied = "true"
 		} else {
@@ -165,6 +169,7 @@ func AddDnsRecord(apiKey string, domain string, zoneId string, typ string, name 
 	reqUrl := CFBaseUrl + "zones/" + zoneId + "/dns_records"
 	var data string
 
+	// this should be using json.Marshal, but I am lazy. TODO
 	if priority != "" {
 		data = fmt.Sprintf("{\"type\":\"%s\",\"name\":\"%s\",\"content\":\"%s\",\"ttl\":%s,\"priority\":%s,\"proxied\":%s}", typ, name, content, ttl, priority, proxied)
 	} else {
